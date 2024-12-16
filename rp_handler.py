@@ -218,12 +218,20 @@ def handler(job):
         if response.status_code == 200:
             return response.json()
         else:
+            resp_json = response.json()
             logger.error(f'HTTP Status code: {response.status_code}', job['id'])
-            logger.error(f'Response: {response.json()}', job['id'])
+            logger.error(f'Response: {resp_json}', job['id'])
+
+            if 'error' in resp_json and 'errors' in resp_json:
+                error = resp_json.get('error')
+                errors = resp_json.get('errors')
+                error_msg = f'{error}: {errors}'
+            else:
+                error_msg = f'A1111 status code: {response.status_code}'
 
             return {
-                'error': f'A1111 status code: {response.status_code}',
-                'output': response.json(),
+                'error': error_msg,
+                'output': resp_json,
                 'refresh_worker': True
             }
     except Exception as e:
