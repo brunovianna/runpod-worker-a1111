@@ -43,7 +43,7 @@ apt update
 apt -y upgrade
 
 # Install bc and aria2 Ubuntu packages
-apt -y install bc aria2c
+apt -y install bc aria2
 
 # Ensure Python version is 3.10.12
 python3 -V
