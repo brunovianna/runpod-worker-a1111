@@ -67,7 +67,7 @@ IMG2IMG_SCHEMA = {
     'scheduler': {
         'type': str,
         'required': False,
-        'default': 'Euler a',
+        'default': 'automatic',
         'constraints': lambda scheduler: scheduler in [
             'automatic',
             'uniform',
