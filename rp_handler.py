@@ -130,6 +130,7 @@ def validate_api(job: Dict[str, Any]) -> Dict[str, Any]:
 def extract_scheduler(value: Union[str, int]) -> Tuple[Optional[str], str]:
     """
     Extract scheduler suffix from a sampler value if present.
+    Preserves the original case of the value while checking for lowercase suffixes.
 
     Args:
         value: The sampler value to check for a scheduler suffix.
@@ -138,13 +139,14 @@ def extract_scheduler(value: Union[str, int]) -> Tuple[Optional[str], str]:
         A tuple containing the scheduler suffix (if found) and the cleaned value.
     """
     scheduler_suffixes = ['uniform', 'karras', 'exponential', 'polyexponential', 'sgm_uniform']
-    value = str(value).lower()
+    value_str = str(value)
+    value_lower = value_str.lower()
 
     for suffix in scheduler_suffixes:
-        if value.endswith(suffix):
-            return suffix, value[:-(len(suffix))].rstrip()
+        if value_lower.endswith(suffix):
+            return suffix, value_str[:-(len(suffix))].rstrip()
 
-    return None, value
+    return None, value_str
 
 
 def validate_payload(job: Dict[str, Any]) -> Tuple[str, str, Dict[str, Any]]:
@@ -169,7 +171,6 @@ def validate_payload(job: Dict[str, Any]) -> Tuple[str, str, Dict[str, Any]]:
                 if scheduler:
                     payload[field] = cleaned_value
                     payload['scheduler'] = scheduler
-                    break
 
     if endpoint == 'v1/sync':
         logger.info(f'Validating /{endpoint} payload', job['id'])
